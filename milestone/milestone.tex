@@ -117,10 +117,28 @@ Relevant audio processing tools and datasets also improve our ability to tackle 
 
 \section{Methods}
 
+\subsection{Dataset}
+
+We begin our exploration with a dataset of 26 Beethoven compositions, stored in the popular MIDI format. MIDI files contain information about each note's pitch, duration, and other data. This gives us a rich starting place for our exploration.
+
+
 
 %------------------------------------------------
 
 \section{Preliminary Experiments}
+
+\subsection{Baseline: Logistic Regression}
+
+\subsubsection{Data Processing}
+We begin processing our data into a set of sequences, each with a one-hot encoding. In our preliminary experiments, we reduce all chords to a single note, and convert all notes to a one-hot encoded vector representation. We then extracted sequences of 10 notes, and used these sequences to predict the following note. Each training input is a vector of concatenated one-hot encodings, representing a sequence of notes. Each target output is a label representing the next note. With our 26 songs, this yields a total of 74,593 training examples, which split into an 85/15 train/dev split.
+
+\subsubsection{Model}
+Using these concatenated vector inputs and label outputs, we then trained a logistic regression classifier to predict subsequent notes given a sequence of notes. Our baseline treats the problem as a multiclass classification problem: there are 78 possible successor notes in our database, and our model emits the most probable successor to a given sequence.
+
+\subsubsection{Evaluation}
+Evaluating on our development model, the logistic regression model obtains 35.6\% accuracy in predicting the a sequence's successive note. For comparison, the most common note (C4) comprises only 3.2\% of notes in our corpus.
+
+\subsubsection{Error Analysis}
 
 
 %------------------------------------------------
