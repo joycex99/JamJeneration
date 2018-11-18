@@ -3,9 +3,9 @@
 .DS_Store
 
 # Milestone file
-milestone/milestone.aux	
+milestone/milestone.aux
 milestone/milestone.fls
 milestone/milestone.out
-milestone/milestone.synctex.g
+milestone/milestone.synctex.gz
 milestone/milestone.fdb_latexmk
 milestone/milestone.log
