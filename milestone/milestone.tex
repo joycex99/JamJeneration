@@ -89,7 +89,7 @@
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
 \noindent
-In which we generate sick beats
+Music composition is an extremely creative task, and consequently very difficult for AI models to successfully perform. We hope to generate music using audio embeddings from deep neural networks, and in doing so, further our understanding of computational creativity. We also hope to visualize and explore relationships between music embeddings using tools such as Principal Component Analysis and t-sne visualization. In this milestone, we generate baseline compositions using Logistic Regression, a traditional classification algorithm, adapted for application to the composition.
 \end{abstract}
 }
 
@@ -106,6 +106,12 @@ In which we generate sick beats
 
 \section{Introduction}
 
+Music exhibits both short-term structure, such as the relation between successive chords and notes, and long-term structure, such as a song's overall key, tempo, and melody. Previous results in music generation have seen limited success, largely due to difficulties in capturing music's complex long-term structure. Recently, however, the use of novel network architectures, such as Long Short-Term Memory networks (LSTMs) and variational autoencoders (VAEs) have opened new possibilities for music generation.\cite{Magenta}.
+
+Notably, these networks have also been used to generate vector embeddings of musical notes and chords. These embeddings can be used to train compositional models, feeding in richly structured data to generate successive notes. In our work, we begin with simple baseline Logistic Regression models, and plan to gradually incorporate these embeddings, network architectures, and an expanded corpus to improve our model's performance.
+
+Relevant audio processing tools and datasets also improve our ability to tackle this problem. The music21 library, developed at MIT, offers a suite of tools for audio processing. The NSynth dataset contains over 300,000 annotated musical notes for over one thousand unique instruments, as well as high-quality music files.\cite{NSynth}
+
 
 %------------------------------------------------
 
@@ -121,6 +127,18 @@ In which we generate sick beats
 
 \section{Next Steps}
 
+First, we must adapt the existing logistic regression model into a composer. By feeding the model a seed string of notes, then repeatedly asking our model to predict a subsequent note, we obtain a string of notes which serve as our model's composition.
+
+Second, we will incorporate chord and rhythmic information into our existing model. Our current model only deals with one-hot encoding of single notes; we can handle chords by reframing our problem as a multilabel problem with inputs vectors marked as 1 for every note present. We may also explore the areas of predicting rhythm and syncopation, with a similar strategy.
+
+Third, using the sequence extraction methods described above, we plan to next feed these one-hot encoded sequences into recurrent neural network architectures. We will likely begin with a vanilla Recurrent Neural Nework (RNN), then move to tuning a Long Short-Term Memory network (LSTM). Improving the performance of these networks will require a good deal of hyperparameter tuning as well.
+
+Fourth, we aim to incorporate the music vector embeddings mentioned earlier, developed in previous work on audio processing and composition. We can then feed these embeddings into our models in place of the existing one-hot encodings, which should enhance our models with richer and more accessible information.
+
+Fifth, we hope to expand our musical range beyond our existing work on the 26-work Beethoven corpus. We may augment our dataset with more classical works, or consider finding a larger corpus in the genres of Jazz or electronica.
+
+Finally, we hope to evaluate our ultimate composition using human evaluators. Previous papers in music generation have used a small number of human evaluators to compare the performance of new models with previous models. This can be measured either by evaluators' personal preference, or how "human" they rate the music to be. We plan to recruit several human testers to compare the acoustic quality of our baseline, neural network model, and human standard.
+
 
 %------------------------------------------------
 
@@ -134,11 +152,9 @@ In which we generate sick beats
 
 \begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
 
-% \bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
-% Figueredo, A.~J. and Wolf, P. S.~A. (2009).
-% \newblock Assortative pairing and life history strategy - a cross-cultural
-%   study.
-% \newblock {\em Human Nature}, 20:317--330.
+
+\bibitem[Magenta]{Figueredo:2009dg}
+https://ai.google.research/pubs/pub4119
 
 \end{thebibliography}
 
