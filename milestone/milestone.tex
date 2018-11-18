@@ -136,9 +136,10 @@ We begin processing our data into a set of sequences, each with a one-hot encodi
 Using these concatenated vector inputs and label outputs, we then trained a logistic regression classifier to predict subsequent notes given a sequence of notes. Our baseline treats the problem as a multiclass classification problem: there are 78 possible successor notes in our database, and our model emits the most probable successor to a given sequence.
 
 \subsubsection{Evaluation}
-Evaluating on our development model, the logistic regression model obtains 35.6\% accuracy in predicting the a sequence's successive note. For comparison, the most common note (C4) comprises only 3.2\% of notes in our corpus.
+Evaluating on our development model, the logistic regression model obtains 28.1\% accuracy in predicting the a sequence's successive note. For comparison, the most common note (C4) comprises only 3.2\% of notes in our corpus.
 
 \subsubsection{Error Analysis}
+We examined the logistic regression model for one common heuristic it might use to predict the next note: simply predicting the previous note in the sequence. It appears to only do this 1.8\% of the time, which reassures us that our model is (hopefully) learning something vaguely valuable?
 
 
 %------------------------------------------------
