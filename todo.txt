@@ -1,0 +1,3 @@
+- use the same get_notes and dataset
+- one-hot encode
+- logistic regression (say, past 30 notes?) 
