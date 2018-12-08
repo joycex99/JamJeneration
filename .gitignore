@@ -12,3 +12,9 @@ milestone/milestone.fdb_latexmk
 milestone/milestone.log
 milestone/milestone.bbl
 milestone/milestone.blg
+
+models/*
+
+*.hdf5
+data/*
+>>>>>>> sample beathoven
