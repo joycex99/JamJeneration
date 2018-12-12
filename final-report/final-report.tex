@@ -89,7 +89,7 @@
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
 \noindent
-Music composition is an extremely creative task, and consequently very difficult for AI models to successfully perform. We hope to generate music using audio embeddings from deep neural networks, and in doing so, further our understanding of computational creativity. We also hope to visualize and explore relationships between music embeddings using tools such as Principal Component Analysis and t-sne visualization. In this milestone, we generate baseline compositions using Logistic Regression, a traditional classification algorithm, adapted for application to the composition.
+Music composition is an extremely creative task, and consequently very difficult for AI models to successfully perform. In this paper, we explore several techniques for generating music using deep neural networks, specifically Long Short-Term Memory networks (LSTMs). We also hope to visualize and explore relationships between music embeddings using tools such as Principal Component Analysis and t-sne visualization. In a human evaluation of musical quality, our LSTM-generated compositions outperformed a composition generated using logistic regression techniques, but failed to match the quality of human-generated compositions. We briefly potential techniques to improve the quality of our LSTM compositions.
 \end{abstract}
 }
 
@@ -104,13 +104,23 @@ Music composition is an extremely creative task, and consequently very difficult
 %   ARTICLE CONTENTS
 %----------------------------------------------------------------------------------------
 
-\section{Motivation}
+\section{Introduction}
 
 Music exhibits both short-term structure, such as the relation between successive chords and notes, and long-term structure, such as a song's overall key, tempo, and melody. Previous results in music generation have seen limited success, largely due to difficulties in capturing music's complex long-term structure. Recently, however, the use of novel network architectures, such as Long Short-Term Memory networks (LSTMs) and variational autoencoders (VAEs) have opened new possibilities for music generation \cite{lstm-vae}.
 
-Notably, these networks have also been used to generate vector embeddings of musical notes and chords. These embeddings can be used to train compositional models, feeding in richly structured data to generate successive notes. In our work, we begin with simple baseline Logistic Regression models, trained on piano notes and chords in various jazz and classical pieces. We plan to gradually incorporate these more complicated embeddings as we move towards neural network-based architectures, and begin using a more musically diverse and expanded corpus to improve our model's performance.
+In this paper, we train a logistic regression model, LSTM, and VAE to take in a sequence of single notes (the melody) and predict the subsequent note in the composition. For each model, our input is the sequence of previous notes in the melody, with each note's pitch encoded as a one-hot vector. Our model then outputs a one-hot vector corresponding to the most plausible subsequent note of the melody. We use each model to compose music by feeding the model a seed sequence of notes, then repeatedly predicting the subsequent note and appending it to the composition.
 
-Relevant audio processing tools and datasets also improve our ability to tackle this problem. The music21 library, developed at MIT, offers a suite of tools for audio processing. The NSynth dataset contains over 300,000 annotated musical notes for over one thousand unique instruments, as well as high-quality music files \cite{NSynth}.
+
+\section{Related Work}
+
+"Aim for at least five sources"
+
+1) Work on LSTM and VAE compositions, perhaps some simple models
+
+2) Work on generating vector embeddings, visualizing with these models
+
+Previous papers have also utilized neural network models, such as LSTMs, to extract embedded vector representations for notes in each sequence. Huang and Wu train LSTM models on several datasets of classical music and extract the learned vector embeddings from their models \cite{lstm-embeddings}. They then use PCA and t-sne visualization techniques to visualize the learned embeddings; their visualizations display clear structure in the learned embeddings, further affirming the power of LSTM models.
+
 
 
 %------------------------------------------------
@@ -121,7 +131,7 @@ Relevant audio processing tools and datasets also improve our ability to tackle 
 
 We begin our exploration with a 2 datasets: one of 26 Beethoven compositions, and the other of 18 Mozart compositions, both stored in the popular MIDI format. MIDI files contain information about each note's pitch, duration, and other data. This gives us a rich starting place for our exploration.
 
-
+Relevant audio processing tools and datasets also improve our ability to tackle this problem. The music21 library, developed at MIT, offers a suite of tools for audio processing. The NSynth dataset contains over 300,000 annotated musical notes for over one thousand unique instruments, as well as high-quality music files \cite{NSynth}.
 
 %------------------------------------------------
 
