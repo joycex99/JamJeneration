@@ -60,6 +60,8 @@
 
 \usepackage{hyperref} % For hyperlinks in the PDF
 \usepackage{url}
+\usepackage{graphicx}
+\graphicspath{ {./images/}}
 
 %----------------------------------------------------------------------------------------
 %   TITLE SECTION
@@ -114,38 +116,46 @@ In this paper, we train a logistic regression model, LSTM, and VAE to take in a 
 \section{Related Work}
 Early attempts to compose music using neural networks utilized Recurrent Neural Networks (RNNs) to predict successive notes in a composition, concatenating these predicted notes to form a melody. Unfortunately, RNN models failed to sufficiently model long-term structures in music, typically suffering from "a lack of global coherence" \cite{Mozer}. Early work by Eck and Schmidhuber overcame these challenges by using LSTMs to model sequences of notes, finding better long-term structure in the resulting compositions of blues melodies \cite{eck}. More recent works have used Variational Autoencoders (VAEs) to model, reconstruct, and compose sequences of musical notes. In particular, Roberts et al. find high performance using Hierarchical VAEs, which significantly outperform flat VAEs in listener evaluations \cite{lstm-vae}.
 
-Previous papers have also utilized neural network models, such as LSTMs, to extract embedded vector representations for notes in each sequence. Huang and Wu train LSTM models on several datasets of classical music and extract the learned vector embeddings from their models \cite{huang-wu}. They then use PCA and t-sne visualization techniques to visualize the learned embeddings; their visualizations display clear structure in the learned embeddings, further affirming the power of LSTM models. Madjiheurem et al. take a similar approach by using a sequence-to-sequence LSTM model to predict successive chords, and taking the LSTM's vector encoding of an input chord as the vector embedding for a given chord \cite{Madjiheurem}. They find that this sequence-to-sequence model outperforms bilinear and autoregressive models, while also producing more sensible embedded representations.
+Recent papers have also utilized neural network models, such as LSTMs, to extract embedded vector representations for notes in each sequence. Huang and Wu train LSTM models on several datasets of classical music and extract the learned vector embeddings from their models \cite{huang-wu}. They then use PCA and t-sne visualization techniques to visualize the learned embeddings; their visualizations display clear structure in the learned embeddings, further affirming the power of LSTM models. Madjiheurem et al. take a similar approach by using a sequence-to-sequence LSTM model to predict successive chords, and taking the LSTM's vector encoding of an input chord as the vector embedding for a given chord \cite{Madjiheurem}. They find that this sequence-to-sequence model outperforms bilinear and autoregressive models, while also producing more sensible embedded representations.
+
+%------------------------------------------------
+
+\section{Dataset}
+
+We begin our exploration with two datasets: one of 26 Beethoven compositions, and the other of 18 Mozart compositions, both stored in the popular MIDI format. MIDI files contain information about each note's pitch and duration in a score. This gives us a rich starting place for our exploration. Both collections were sourced from a repository of classical piano scores in MIDI format \cite{classical-piano-midi}. We then used the music21 library, developed at music21, to process our MIDI files into sequences of pitches \cite{music21}. We tackled the simplified problem of composing melodies without chords, by taking just one pitch from each chord in the existing melodies. The resulting distribution of extracted notes is displayed below.
+
+\includegraphics[width = 0.4\textwidth]{note-distribution}
+
+We then featurized the notes/chords as sequences of multi-hot vectors, where we first mapped all unique pitches in song to an index, then transformed individual notes to one-hot vector, and chords to multi-hot vectors (based on pitches).
+
+\includegraphics[width = 0.4\textwidth]{one-hot-encoding}
+
+We used a sliding window approach to capture the temporal structure in the data. Our input at each time-step is the vector concatenation of the past 10 notes, and our label is the next note. With our 26 songs, this yields a total of 74,593 training examples, which we split into an 85/15 train/dev split.
+
 
 %------------------------------------------------
 
 \section{Methods}
 
-\subsection{Dataset}
-
-We begin our exploration with a 2 datasets: one of 26 Beethoven compositions, and the other of 18 Mozart compositions, both stored in the popular MIDI format. MIDI files contain information about each note's pitch, duration, and other data. This gives us a rich starting place for our exploration.
-
-Relevant audio processing tools and datasets also improve our ability to tackle this problem. The music21 library, developed at MIT, offers a suite of tools for audio processing. The NSynth dataset contains over 300,000 annotated musical notes for over one thousand unique instruments, as well as high-quality music files \cite{NSynth}.
-
-%------------------------------------------------
-
-\section{Preliminary Experiments}
-
 \subsection{Baseline: Logistic Regression}
 
-\subsubsection{Data Processing}
-We begin processing our data into a set of note sequences, each with a one-hot encoding. In our preliminary experiments, we reduce all chords to a single note, and convert all notes to a one-hot encoded vector representation. We use a sliding window approach to extract our data: we move across each song, capturing 11 notes per window, and use the first 10 notes as our training data and the last note as the "class" we are trying to predict. Each training input is a vector of concatenated one-hot encodings, representing a sequence of notes. Each target output is a label representing the next note. With our 26 songs, this yields a total of 74,593 training examples, which split into an 85/15 train/dev split.
+We begin with a simple logistic regression classifier trained to output the succesor note to a sequence of notes, encoded in one-hot vector form. Our baseline treats the problem as a multiclass classification problem: there are 78 possible successor notes in our database, and our model emits the most probable successor to a given sequence.
 
-\subsubsection{Model}
-Using these concatenated vector inputs and label outputs, we then trained a logistic regression classifier to predict subsequent notes given a sequence of notes. Our baseline treats the problem as a multiclass classification problem: there are 78 possible successor notes in our database, and our model emits the most probable successor to a given sequence.
+As a brief exploration of the logistic regression model's predictive power, we evaluate its predictive accuracy on our development set. The logistic regression model obtains 28.5\% accuracy in predicting the a sequence's successive note on the Beethoven dataset, and an accuracy of 29.9\% for the Mozart dataset.
 
-\subsubsection{Evaluation}
-Evaluating on our development model, the logistic regression model obtains 28.5\% accuracy in predicting the a sequence's successive note on the Beethoven dataset, and an accuracy of 29.9\% for the Mozart dataset. For comparison, the most common note (C4 and D5 respectively) comprises only 3.2\% of notes in the Beethoven corpus and only 5.8\% of notes in the Mozart dataset.
+Then, to compose a score with our logistic regression model, we feed the model a seed string of notes and repeatedly ask our model to predict a subsequent note. With the subsequent note, we have a new a string of notes which can serve as our model's next generation seed.
 
-\subsubsection{Error Analysis}
-We examined the logistic regression model for one common heuristic it might use to predict the next note: simply predicting the previous note in the sequence. It appears to only do this 1.8\% of the time, which reassures us that our model is (hopefully) learning something vaguely valuable?
+\subsection{LSTM}
 
-\subsubsection{Generation}
-In order to turn our logistic regression model into a music generator, we feed the model a seed string of notes, then repeatedly ask our model to predict a subsequent note. With the subsequent note, we have a new a string of notes which can serve as our model's next generation seed.
+Our next model a long short-term memory (LSTM) model, which is a refinement on the more general class of recurrent neural network (RNN) models. Recurrent neural networks are designed to capture and remember structure across time. In particular, the input to the model at each timestep is not only the new note, but the hidden state at the previous step of the model. A simplified depiction of an RNN is included below.
+
+\includegraphics[width = 0.4\textwidth]{rnn-diagram}
+
+LSTMs are a special class of RNNs augmented to better remember long-term dependencies. Within each hidden node, there is an additional cell state and a series of gates which control how much information is updated or forgotten in the cell state. These gates are depicted in the diagram below.
+
+\includegraphics[width = 0.4\textwidth]{colah-lstm-diagram}
+
+*add note on Attention*
 
 %------------------------------------------------
 
