@@ -59,6 +59,7 @@
 \usepackage{titling} % Customizing the title section
 
 \usepackage{hyperref} % For hyperlinks in the PDF
+\usepackage{url}
 
 %----------------------------------------------------------------------------------------
 %   TITLE SECTION
@@ -110,18 +111,10 @@ Music exhibits both short-term structure, such as the relation between successiv
 
 In this paper, we train a logistic regression model, LSTM, and VAE to take in a sequence of single notes (the melody) and predict the subsequent note in the composition. For each model, our input is the sequence of previous notes in the melody, with each note's pitch encoded as a one-hot vector. Our model then outputs a one-hot vector corresponding to the most plausible subsequent note of the melody. We use each model to compose music by feeding the model a seed sequence of notes, then repeatedly predicting the subsequent note and appending it to the composition.
 
-
 \section{Related Work}
+Early attempts to compose music using neural networks utilized Recurrent Neural Networks (RNNs) to predict successive notes in a composition, concatenating these predicted notes to form a melody. Unfortunately, RNN models failed to sufficiently model long-term structures in music, typically suffering from "a lack of global coherence" \cite{Mozer}. Early work by Eck and Schmidhuber overcame these challenges by using LSTMs to model sequences of notes, finding better long-term structure in the resulting compositions of blues melodies \cite{eck}. More recent works have used Variational Autoencoders (VAEs) to model, reconstruct, and compose sequences of musical notes. In particular, Roberts et al. find high performance using Hierarchical VAEs, which significantly outperform flat VAEs in listener evaluations \cite{lstm-vae}.
 
-"Aim for at least five sources"
-
-1) Work on LSTM and VAE compositions, perhaps some simple models
-
-2) Work on generating vector embeddings, visualizing with these models
-
-Previous papers have also utilized neural network models, such as LSTMs, to extract embedded vector representations for notes in each sequence. Huang and Wu train LSTM models on several datasets of classical music and extract the learned vector embeddings from their models \cite{lstm-embeddings}. They then use PCA and t-sne visualization techniques to visualize the learned embeddings; their visualizations display clear structure in the learned embeddings, further affirming the power of LSTM models.
-
-
+Previous papers have also utilized neural network models, such as LSTMs, to extract embedded vector representations for notes in each sequence. Huang and Wu train LSTM models on several datasets of classical music and extract the learned vector embeddings from their models \cite{huang-wu}. They then use PCA and t-sne visualization techniques to visualize the learned embeddings; their visualizations display clear structure in the learned embeddings, further affirming the power of LSTM models. Madjiheurem et al. take a similar approach by using a sequence-to-sequence LSTM model to predict successive chords, and taking the LSTM's vector encoding of an input chord as the vector embedding for a given chord \cite{Madjiheurem}. They find that this sequence-to-sequence model outperforms bilinear and autoregressive models, while also producing more sensible embedded representations.
 
 %------------------------------------------------
 
