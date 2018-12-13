@@ -17,4 +17,10 @@ models/*
 
 *.hdf5
 data/*
->>>>>>> sample beathoven
+
+
+*.midi
+*.band
+*.mp3
+*.pptx
+*.mid
