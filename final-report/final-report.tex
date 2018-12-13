@@ -155,7 +155,7 @@ LSTMs are a special class of RNNs augmented to better remember long-term depende
 
 \includegraphics[width = 0.4\textwidth]{colah-lstm-diagram}
 
-*add note on Attention*
+In addition, our LSTM implementation incorporate attention, which improves the ability of LSTMs to encode long-term structure. While a basic LSTM solely uses the previous output vector as input to the next cell, LSTMs with attention also take the previous $n$ output vectors as input. The model applies an attention mask to these vectors, determining the relative weight given to each previous output. By consulting these previous output vectors, models with attention are better able to capture long-term structures like repeated notes, rhythms, and song key.
 
 %------------------------------------------------
 
