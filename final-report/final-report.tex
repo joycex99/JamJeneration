@@ -22,7 +22,7 @@
 \documentclass[twoside,twocolumn]{article}
 
 \usepackage{blindtext} % Package to generate dummy text throughout this template
-
+\usepackage{amsmath}
 \usepackage[sc]{mathpazo} % Use the Palatino font
 \usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
 \linespread{1.05} % Line spacing - Palatino needs more space between lines
@@ -155,7 +155,13 @@ LSTMs are a special class of RNNs augmented to better remember long-term depende
 
 \includegraphics[width = 0.4\textwidth]{colah-lstm-diagram}
 
-In addition, our LSTM implementation incorporate attention, which improves the ability of LSTMs to encode long-term structure. While a basic LSTM solely uses the previous output vector as input to the next cell, LSTMs with attention also take the previous $n$ output vectors as input. The model applies an attention mask to these vectors, determining the relative weight given to each previous output. By consulting these previous output vectors, models with attention are better able to capture long-term structures like repeated notes, rhythms, and song key. \\
+In addition, our LSTM implementation incorporate attention, which improves the ability of LSTMs to encode long-term structure. While a basic LSTM solely uses the previous output vector as input to the next cell, LSTMs with attention also take the previous $n$ output vectors as input. In other words, the model implements:
+\begin{align}
+u_i^t &= v^T \text{tanh}(W_1^\prime h_i + W_2^\prime c_t) \\
+a_i^t &= \text{softmax}(u_i^t) \\
+h_t^\prime &= \sum_{i=t-n}^{t-1} a_i^t h_i
+\end{align}
+Where vector $v$ and matrix $W^\prime$ are the lernable parameters. $c_t$ is the RNN's cell state at the current step and $h_i$ are the RNN outputs from the previous $n$ steps. The model applies an mask vector called the attention mask  $a_i$to these vectors, determining the relative weight given to each previous output. By consulting these previous output vectors, models with attention are better able to capture long-term structures like repeated notes, rhythms, and song key. \\
 
 %------------------------------------------------
 
