@@ -161,7 +161,7 @@ u_i^t &= v^T \text{tanh}(W_1^\prime h_i + W_2^\prime c_t) \\
 a_i^t &= \text{softmax}(u_i^t) \\
 h_t^\prime &= \sum_{i=t-n}^{t-1} a_i^t h_i
 \end{align}
-Where vector $v$ and matrix $W^\prime$ are the lernable parameters. $c_t$ is the RNN's cell state at the current step and $h_i$ are the RNN outputs from the previous $n$ steps. The model applies an mask vector called the attention mask  $a_i$to these vectors, determining the relative weight given to each previous output. By consulting these previous output vectors, models with attention are better able to capture long-term structures like repeated notes, rhythms, and song key. \\
+Where vector $v$ and matrix $W^\prime$ are the laernable parameters. $c_t$ is the RNN's cell state at the current step, and $h_i$ are the RNN outputs from the previous $n$ steps. The model applies an mask vector called the attention mask  $a_i$ to these vectors, determining the relative weight given to each previous output. By consulting these previous output vectors, models with attention are better able to capture long-term structures like repeated notes, rhythms, and song key. \\
 
 %------------------------------------------------
 
@@ -278,3 +278,8 @@ Eric handled data preprocessing to extract note sequences from MIDI files and se
 %----------------------------------------------------------------------------------------
 
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
