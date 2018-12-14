@@ -92,7 +92,7 @@
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
 \noindent
-Music composition is an extremely creative task, and consequently very difficult for AI models to successfully perform. In this paper, we explore several techniques for generating music using deep neural networks, specifically Long Short-Term Memory networks (LSTMs) and attention-based LSTMs. In a human evaluation of musical quality, our LSTM-generated compositions outperformed a composition generated using logistic regression techniques, but failed to match the quality of human-generated compositions. We briefly discuss potential techniques to improve the quality of our LSTM compositions.
+Music composition is an extremely creative task, and consequently very difficult for AI models to successfully perform. In this paper, we explore several techniques for generating music using deep neural networks, specifically Long Short-Term Memory networks (LSTMs) and attention-based LSTMs. From these networks, we also extract embedded vector representations for individual notes and visualize their representations using Principal Component Analysis (PCA). In a human evaluation of musical quality, our LSTM-generated compositions outperformed a composition generated using logistic regression techniques, but failed to match the quality of human-generated compositions. We briefly discuss potential techniques to improve the quality of our LSTM compositions.
 \end{abstract}
 }
 
@@ -185,7 +185,13 @@ That being said, higher prediction accuracy by a model likely indicates better u
 
 We determined that our logistic regression achieves a 28.5\% accuracy  in predicting the next note on the Beethoven dataset, and an accuracy of 29.9\% for the Mozart dataset. \\
 
-\subsection{Human evaluation}
+\subsection{Embedded Vector Representations}
+
+Deep neural networks, such as LSTMs, have been used to learn vector embeddings of data, where relationships between embedded vectors capture useful information about the input data \cite{huang-wu}. As a measure of how much our LSTM has learned, we extract embedded vector representations for notes, visualizing these vector representations using Principal Component Analysis (PCA).
+
+We extract the embedded vector representation for a given note by feeding our LSTM a sequence repeating that note, then extracting outputs of the LSTM's penultimate layer, similar to the Word2Vec model. We then perform PCA on our set of embeddings, reducing to two principal components. We find that the first two components of our PCA decomposition capture 95\% of variation among embedded vector representations. The PCA visualization further reveals that the embeddings capture useful relationships between various notes. The same notes in different octaves (e.g. 'E5', 'E4', 'E3') cluster closely together, indicating that our LSTM has learned the similarity between notes of various octaves.
+
+\subsection{Human Evaluation}
 For our primary task, we evaluated the compositions produced by our models on 16 human
 evaluators. Evaluators were asked to rate the acoustic quality of the produced
 compositions on a scale from 1 to 10, with a Mozart composition set as 10 to
@@ -268,7 +274,7 @@ representation.
 
 \section{Contributions}
 
-Eric handled data preprocessing to extract note sequences from MIDI files, and trained the logistic regression baseline to compose. Joyce trained the standard LSTM model to compose, and performed much of the data visualization throughout the paper. Sam trained and generated compositions with the attention-based LSTM. All team members contributed to sourcing human evaluators and writing the final paper.
+Eric handled data preprocessing to extract note sequences from MIDI files, and trained the logistic regression baseline to compose. Joyce trained the standard LSTM model to compose, and performed much of the data visualization throughout the paper. Sam trained and generated compositions with the attention-based LSTM. All team members contributed to sourcing human evaluators and writing the final paper. Code and a selection of generated MIDI files are located at https://github.com/joycex99/jam-jeneration.
 
 
 %----------------------------------------------------------------------------------------
