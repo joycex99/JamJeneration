@@ -53,7 +53,7 @@
 \pagestyle{fancy} % All pages have headers and footers
 \fancyhead{} % Blank out the default header
 \fancyfoot{} % Blank out the default footer
-\fancyhead[C]{Music Generation $\bullet$ November 2018 $\bullet$ Tang, Xu, Xu} % Custom header text
+\fancyhead[C]{Music Generation $\bullet$ December 2018 $\bullet$ Tang, Xu, Xu} % Custom header text
 \fancyfoot[RO,LE]{\thepage} % Custom footer text
 
 \usepackage{titling} % Customizing the title section
@@ -92,7 +92,7 @@
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
 \noindent
-Music composition is an extremely creative task, and consequently very difficult for AI models to successfully perform. In this paper, we explore several techniques for generating music using deep neural networks, specifically Long Short-Term Memory networks (LSTMs). We also hope to visualize and explore relationships between music embeddings using tools such as Principal Component Analysis and t-sne visualization. In a human evaluation of musical quality, our LSTM-generated compositions outperformed a composition generated using logistic regression techniques, but failed to match the quality of human-generated compositions. We briefly potential techniques to improve the quality of our LSTM compositions.
+Music composition is an extremely creative task, and consequently very difficult for AI models to successfully perform. In this paper, we explore several techniques for generating music using deep neural networks, specifically Long Short-Term Memory networks (LSTMs) and attention-based LSTMs. In a human evaluation of musical quality, our LSTM-generated compositions outperformed a composition generated using logistic regression techniques, but failed to match the quality of human-generated compositions. We briefly discuss potential techniques to improve the quality of our LSTM compositions.
 \end{abstract}
 }
 
@@ -111,7 +111,7 @@ Music composition is an extremely creative task, and consequently very difficult
 
 Music exhibits both short-term structure, such as the relation between successive chords and notes, and long-term structure, such as a song's overall key, tempo, and melody. Previous results in music generation have seen limited success, largely due to difficulties in capturing music's complex long-term structure. Recently, however, the use of novel network architectures, such as Long Short-Term Memory networks (LSTMs) and variational autoencoders (VAEs) have opened new possibilities for music generation \cite{lstm-vae}.
 
-In this paper, we train a logistic regression model, LSTM, and VAE to take in a sequence of single notes (the melody) and predict the subsequent note in the composition. For each model, our input is the sequence of previous notes in the melody, with each note's pitch encoded as a one-hot vector. Our model then outputs a one-hot vector corresponding to the most plausible subsequent note of the melody. We use each model to compose music by feeding the model a seed sequence of notes, then repeatedly predicting the subsequent note and appending it to the composition.
+In this paper, we train several models to take in a sequence of single notes (the melody) and predict the subsequent note in the melody. For each model, our input is the sequence of previous notes in the melody, with each note's pitch encoded as a one-hot vector. Our model then outputs a one-hot vector corresponding to the most plausible subsequent note of the melody. We use each model to compose music by feeding the model a seed sequence of notes, then repeatedly predicting the subsequent note and appending it to the composition. We develop and compare three models: logistic regression, a standard LSTM, and an LSTM utilizing attention. We find that the LSTM and attention LSTM significantly outperform our baseline, but still fall well short of human-level composition.
 
 \section{Related Work}
 Early attempts to compose music using neural networks utilized Recurrent Neural Networks (RNNs) to predict successive notes in a composition, concatenating these predicted notes to form a melody. Unfortunately, RNN models failed to sufficiently model long-term structures in music, typically suffering from "a lack of global coherence" \cite{Mozer}. Early work by Eck and Schmidhuber overcame these challenges by using LSTMs to model sequences of notes, finding better long-term structure in the resulting compositions of blues melodies \cite{eck}. More recent works have used Variational Autoencoders (VAEs) to model, reconstruct, and compose sequences of musical notes. In particular, Roberts et al. find high performance using Hierarchical VAEs, which significantly outperform flat VAEs in listener evaluations \cite{lstm-vae}.
@@ -147,7 +147,7 @@ Then, to compose a score with our logistic regression model, we feed the model a
 
 \subsection{LSTM}
 
-Our next model a long short-term memory (LSTM) model, which is a refinement on the more general class of recurrent neural network (RNN) models. Recurrent neural networks are designed to capture and remember structure across time. In particular, the input to the model at each timestep is not only the new note, but the hidden state at the previous step of the model. A simplified depiction of an RNN is included below.
+Our next model is a long short-term memory (LSTM) model, which is a refinement on the more general class of recurrent neural network (RNN) models. Recurrent neural networks are designed to capture and remember structure across time. In particular, the input to the model at each timestep is not only the new note, but the hidden state at the previous step of the model. A simplified depiction of an RNN is included below.
 
 \includegraphics[width = 0.4\textwidth]{rnn-diagram}
 
@@ -167,9 +167,9 @@ Where vector $v$ and matrix $W^\prime$ are the laernable parameters. $c_t$ is th
 
 \section{Experiments}
 
-For logistic regression, we ran 4-fold cross-validation over our training dataset, which consisted of 85\% of all of our songs. For our LSTM's, because it became too expensive to run full cross-validation, we further divided our training set into 70/15 train/validation sets and chose our hyperparameters based on performance on the  validation set. 
+For logistic regression, we ran 4-fold cross-validation over our training dataset, which consisted of 85\% of all of our songs. For our LSTM's, because it became too expensive to run full cross-validation, we further divided our training set into 70/15 train/validation sets and chose our hyperparameters based on performance on the  validation set.
 
-For our logistic regression model, we ran gridsearch for the best regulation parameter C, attempting values of 0.1, 1, 10, and 100. We found that we achieved the best results with C=10. 
+For our logistic regression model, we ran gridsearch for the best regulation parameter C, attempting values of 0.1, 1, 10, and 100. We found that we achieved the best results with C=10.
 
 For our simple LSTM model, we used 2 LSTM's with 128 nodes each, and a dropout of 0.2. For our attention-based LSTM model, we used 2 LSTM's with 64 nodes each. We trained each one with a batch size of 64. These parameters were chosen based on best reported results in the original attention LSTM codebase.
 
@@ -179,14 +179,11 @@ For our simple LSTM model, we used 2 LSTM's with 128 nodes each, and a dropout o
 \section{Results and Evaluation}
 
 \subsection{Prediction accuracies}
-First, we evaluated our models on their ability to predict the next note of a given sequence. It is important to note that this is not necessarily indicative of model performance on the task we actually care about, which is generation. In particular, we note that humans cannot achieve anything near perfect prediction accuracy for musical sequences we have not seen before, but we are able to generate \textit{new} sequences that are melodic and exhibit sensible musical structure. 
+First, we evaluated our models on their ability to predict the next note of a given sequence. It is important to note that this is not necessarily indicative of model performance on the task we actually care about, which is generation. In particular, we note that humans cannot achieve anything near perfect prediction accuracy for musical sequences we have not seen before, but we are able to generate \textit{new} sequences that are melodic and exhibit sensible musical structure.
 
 That being said, higher prediction accuracy by a model likely indicates better understanding of patterns in note sequences, chords, and most importantly, key. We compare the prediction performance of our models with 4-fold cross-validation.
 
 We determined that our logistic regression achieves a 28.5\% accuracy  in predicting the next note on the Beethoven dataset, and an accuracy of 29.9\% for the Mozart dataset. \\
-
-\#TODO: prediction accuracy chart
-
 
 \subsection{Human evaluation}
 For our primary task, we evaluated the compositions produced by our models on 16 human
@@ -194,17 +191,25 @@ evaluators. Evaluators were asked to rate the acoustic quality of the produced
 compositions on a scale from 1 to 10, with a Mozart composition set as 10 to
 serve as our relative best performing composition.
 
-\# TODO: insert chart w/ nn 
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Source} & \textbf{Avg. Evaluation} \\ \hline
+Logistic Regr.  & 2.93                  \\ \hline
+LSTM            & 5.86                  \\ \hline
+Attention LSTM  & 5.31                  \\ \hline
+Mozart          & 10.0                  \\ \hline
+\end{tabular} \\
 
+Both LSTM models clearly outperform our logistic regression baseline but lag behind the original Mozart composition. We are somewhat surprised that our attention LSTM fails to outperform the standard LSTM. This may indicate that attention has a limited effect on acoustic results, or it may be a result of our relatively small sample of human evaluators.
 
 \subsection{Analysis of Samples}
-We further compared the distribution of generated notes for a few samples of the logistic regression baseline and simple LSTM model. 
+We further compared the distribution of generated notes for a few samples of the logistic regression baseline and simple LSTM model.
 
 \includegraphics[width = 0.45\textwidth]{images/logreg_notes.png}
 
 \includegraphics[width = 0.45\textwidth]{images/simple_lstm_notes.png}
 
-As expected, both models generate a smaller range of notes than the original Beethoven samples shown earlier (although, the Beethoven samples contained more songs and thus more notes in total than the samples we are evaluating). Even so, logistic regression is notably even more limited in range, alternating among 11 different notes for 3 songs. While the vanilla LSTM is much more varied, it is similarly susceptible to repetition of single notes, with G4 being generated almost twice as often as any other note. 
+As expected, both models generate a smaller range of notes than the original Beethoven samples shown earlier (although, the Beethoven samples contained more songs and thus more notes in total than the samples we are evaluating). Even so, logistic regression is notably even more limited in range, alternating among 11 different notes for 3 songs. While the vanilla LSTM is much more varied, it is similarly susceptible to repetition of single notes, with G4 being generated almost twice as often as any other note.
 
 For comparison, we calculated the prediction accuracy that would be obtained by using a classifier that just predicts the most common note (MCN) in these output samples. The accuracies that would be achieved with this MCN predictor are reported in the table below, both for the generated outputs and the original Beethoven and Mozart pieces. \\
 
@@ -234,7 +239,7 @@ melodies throughout the piece:
 
 We suspect the reason LSTM's are able to perform so much better is that they have a hidden state that works as the "memory" of the network, and this hidden state is gated such that it can store and recall past signals for a long period of time. In contrast, the logistic regression model only gets the past 10 notes as an input, in no particular order or emphasis.
 
-Furthermore, it makes sense that the attention-based LSTM outperforms the normal LSTM, especially for generating musical sequences. Notably, repetition in music often happens across 1 or 2 bars, and attention-based LSTM's allow the model to focus in on the appropriate corresponding previous hidden states at each time step. In other words, the model learns to focus on the second note of the previous melody when it is trying to generate the second note of the repeated melody. 
+Furthermore, it makes sense that the attention-based LSTM outperforms the normal LSTM, especially for generating musical sequences. Notably, repetition in music often happens across 1 or 2 bars, and attention-based LSTM's allow the model to focus in on the appropriate corresponding previous hidden states at each time step. In other words, the model learns to focus on the second note of the previous melody when it is trying to generate the second note of the repeated melody.
 
 These qualitative differences in composition align with our expectations, as well as the quantitative difference in average human
 evaluation score. We conclude that LSTMs are better able to capture long-term dependencies and structure in musical compositions.
@@ -247,13 +252,13 @@ evaluation score. We conclude that LSTMs are better able to capture long-term de
 
 \subsection{Summary of Results}
 
-We find that logistic regression models are unable to capture long-term patterns in music, and default to generating the most common notes or 2-4 note sequences. Meanwhile, our regular LSTM model is able to vary its generated output much more significantly, likely because its internal memory cell is able to condition on longer sequences of notes and capture greater variation within them. Finally, our attention-based LSTM model is further able to capture repetitions of simple melodies across a few bars, which is consistent with the ability of the attention mechanism to focus on important previous states. 
+We find that logistic regression models are unable to capture long-term patterns in music, and default to generating the most common notes or 2-4 note sequences. Meanwhile, our regular LSTM model is able to vary its generated output much more significantly, likely because its internal memory cell is able to condition on longer sequences of notes and capture greater variation within them. Finally, our attention-based LSTM model is further able to capture repetitions of simple melodies across a few bars, which is consistent with the ability of the attention mechanism to focus on important previous states.
 
 
 \subsection{Future Steps}
-If we had more time or resources, there are a few extensions of our current research that we would like to pursue. 
+If we had more time or resources, there are a few extensions of our current research that we would like to pursue.
 
-First and foremost, we would like to extend our baseline models to handle and predict rhythm in addition to notes and chords. Right now, our attention-based LSTM model is able to predict "rest" or "hold" events, but our regular LSTM and logistic regression baselines are lacking in those features. We would have liked to add those in for a better comparison of generated music samples. 
+First and foremost, we would like to extend our baseline models to handle and predict rhythm in addition to notes and chords. Right now, our attention-based LSTM model is able to predict "rest" or "hold" events, but our regular LSTM and logistic regression baselines are lacking in those features. We would have liked to add those in for a better comparison of generated music samples.
 
 We would also like to generalize beyond just piano melodies and explore generation with
 other instruments, percussions, or electronic sounds. In addition, we hope to
@@ -261,9 +266,9 @@ explore ways to generate multiple notes per time step, and experiment with gener
 representation.
 
 
-\section{Contributions -- TODO: UPDATE}
+\section{Contributions}
 
-Eric handled data preprocessing to extract note sequences from MIDI files and set up the logistic regression baseline. Joyce and Sam have run an LSTM baseline to compose using our Mozart dataset, and are currently testing other instrumental and synthesized datasets.
+Eric handled data preprocessing to extract note sequences from MIDI files, and trained the logistic regression baseline to compose. Joyce trained the standard LSTM model to compose, and performed much of the data visualization throughout the paper. Sam trained and generated compositions with the attention-based LSTM. All team members contributed to sourcing human evaluators and writing the final paper.
 
 
 %----------------------------------------------------------------------------------------
